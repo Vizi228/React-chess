@@ -1,9 +1,8 @@
-interface pieceProp {
-    image: string,
-}
+import { pieceProp } from "../../types/PiecesTypes"
 
-export default function Piece({image}: pieceProp) {
+const Piece: React.FC<pieceProp> = ({image}) =>{
     return (
-        <div className="tile-piece" style={{backgroundImage: `url(${image})`}}></div>
+        <div className="tile-piece" onDragStart={e => false} style={{backgroundImage: `url(${image})`}}></div>
     )
 }
+export default Piece

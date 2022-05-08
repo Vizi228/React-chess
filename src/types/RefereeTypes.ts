@@ -1,3 +1,5 @@
+import { Pieces } from "./PiecesTypes";
+
 export enum PieceType {
     PAWN,
     QUEEN,
@@ -17,4 +19,24 @@ export interface isValidMoveType{
     y:number,
     type: PieceType,
     teamType: TeamType,
+    boardState: Pieces[],
+    lastMovesPiece: object | null, 
+}
+export interface tileIsOccupiedType{
+    x:number,
+    y:number,
+    boardState: Pieces[],
+}
+export interface tileOccupiedByOpponentType{
+    x:number,
+    y:number,
+    boardState: Pieces[],
+    teamType: TeamType,
+}
+export interface isEnPassantMoveType {
+    x:number,
+    y:number,
+    boardState: Pieces[],
+    teamType: TeamType,
+    lastMovesPiece: object | null, 
 }

@@ -8,7 +8,7 @@ export interface Grab{
 export interface Move {
     e: React.MouseEvent, 
     boardRef: any, 
-    activePiece: HTMLElement | null
+    activePiece: HTMLElement | null,
 }
 export interface Drop {
     e: React.MouseEvent, 
@@ -18,5 +18,7 @@ export interface Drop {
     grabX: number, 
     grabY: number, 
     setPieces: any, 
-    pieces: any[]
+    pieces: any[],
+    lastMovesPiece: object | null,
+    setLastMovesPiece: any
 }

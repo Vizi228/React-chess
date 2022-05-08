@@ -6,3 +6,6 @@ export interface Pieces{
     type: PieceType,
     teamType: TeamType
 }
+export interface pieceProp {
+    image: string,
+}
