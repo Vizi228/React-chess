@@ -1,18 +1,18 @@
-import { generateBishopMoves } from "../types/RefereeTypes";
+import { generateMoves } from "../types/RefereeTypes";
 
-export function bishopMovement({px, py, boardState, teamType, tileOccupiedByTeammate, tileOccupiedByOpponent}: generateBishopMoves): any[] {
+export function bishopMovement({px, py, boardState, teamType, tileOccupiedByTeammate, tileOccupiedByOpponent}: generateMoves): any[] {
     const movesArr: any[] = [];
     const BOARD_TILE_MAX = 8;
     const BOARD_TILE_MIN = 0;
     for(let i = 1; i < BOARD_TILE_MAX; i++){
         let bottomRightMove = {x: px + i, y: py - i}
         if((bottomRightMove.x <= BOARD_TILE_MAX && bottomRightMove.x >= BOARD_TILE_MIN) && (bottomRightMove.y <= BOARD_TILE_MAX && bottomRightMove.y >= BOARD_TILE_MIN)) {
-            if(!tileOccupiedByOpponent({x: px + i, y:py + i, boardState, teamType})) {
-                movesArr.push({x: px + i, y: py - i})
+            if(!tileOccupiedByOpponent({x: bottomRightMove.x, y:bottomRightMove.y, boardState, teamType})) {
+                movesArr.push(bottomRightMove)
                 break
             }    
-            if(!tileOccupiedByTeammate({x: px + i, y:py + i, boardState, teamType})) break
-            movesArr.push({x: px + i, y: py - i});
+            if(!tileOccupiedByTeammate({x: bottomRightMove.x, y:bottomRightMove.y, boardState, teamType})) break
+            movesArr.push(bottomRightMove);
         }else {
             break
         }

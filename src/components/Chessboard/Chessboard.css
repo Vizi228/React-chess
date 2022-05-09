@@ -26,8 +26,8 @@
     cursor: grabbing;
 }
 .chessboard .tile-white{
-    background-color: #ebecd0;
+    background-color: #ffffff;
 }
 .chessboard .tile-black{
-    background-color: #779556;;
+    background-color: #855713;;
 }

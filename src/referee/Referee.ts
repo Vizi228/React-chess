@@ -1,5 +1,6 @@
 import {isValidMoveType,TeamType,PieceType, tileIsOccupiedType, tileOccupiedBy, isEnPassantMoveType } from "../types/RefereeTypes"
-import { bishopMovement } from "../utils/generateBishopMove"
+import { bishopMovement } from "../utils/generateBishopMove";
+import { rookMovement } from "../utils/generateRookMoves";
 export default class Referee {
     tileIsOccupied({x,y,boardState}: tileIsOccupiedType): boolean{
         let inFrontOfTile = boardState.find(p => p.x === x && p.y === y)
@@ -81,7 +82,36 @@ export default class Referee {
             }
         }
         if(type === PieceType.ROOK) {
-            console.log('ROOK')
+            const rookMoves = rookMovement({px,py,tileOccupiedByOpponent: this.tileOccupiedByOpponent,tileOccupiedByTeammate: this.tileOccupiedByTeammate,boardState,teamType});
+            const validRookMoves = rookMoves.find(item => item.x === x && item.y === y);
+            if(validRookMoves && this.tileIsOccupied({x,y,boardState})) {
+                return true
+            }
+            if(validRookMoves && !this.tileOccupiedByOpponent({x,y,boardState, teamType})) {
+                return true
+            }
+        }
+        if(type === PieceType.QUEEN) {
+            const bishopMoves = bishopMovement({px,py,tileOccupiedByOpponent: this.tileOccupiedByOpponent,tileOccupiedByTeammate: this.tileOccupiedByTeammate,boardState,teamType});
+            const rookMoves = rookMovement({px,py,tileOccupiedByOpponent: this.tileOccupiedByOpponent,tileOccupiedByTeammate: this.tileOccupiedByTeammate,boardState,teamType});
+            const validBishopMovement = bishopMoves.find(item => item.x === x && item.y === y);
+            const validRookMoves = rookMoves.find(item => item.x === x && item.y === y);
+            const validQueenMoves = validBishopMovement || validRookMoves;
+            console.log(bishopMoves)
+            if(validQueenMoves && this.tileIsOccupied({x,y,boardState})) {
+                return true
+            }
+            if(validQueenMoves && !this.tileOccupiedByOpponent({x,y,boardState, teamType})) {
+                return true
+            }
+        }
+        if(type === PieceType.KING) {
+            const MAX_STEP_VALUE = 1;
+            const validKingMove = (y !== py || x !== px) && ((y <= py + MAX_STEP_VALUE && y >= py - MAX_STEP_VALUE) && (x <= px + MAX_STEP_VALUE && x >= px - MAX_STEP_VALUE));
+            if(validKingMove && this.tileOccupiedByTeammate({x,y,boardState,teamType})){
+                console.log('valid')
+                return true
+            }
         }
         return false
     }

@@ -40,7 +40,7 @@ export interface isEnPassantMoveType {
     teamType: TeamType,
     lastMovesPiece: object | null, 
 }
-export interface generateBishopMoves {
+export interface generateMoves {
     px: number,
     py:number,
     boardState:Pieces[],
