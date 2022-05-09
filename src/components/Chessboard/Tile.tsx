@@ -1,6 +1,9 @@
 import Piece from "../Piece/Piece";
 
-import { TileProps } from "../../types/TileTypes";
+interface TileProps {
+    number: number,
+    image: string,
+}
 
 const Tile: React.FC<TileProps> = ({number, image}) => {
     let name = number % 2 === 1 ? 'tile-white' : 'tile-black';

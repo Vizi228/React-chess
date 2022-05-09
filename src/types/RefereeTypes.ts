@@ -27,7 +27,7 @@ export interface tileIsOccupiedType{
     y:number,
     boardState: Pieces[],
 }
-export interface tileOccupiedByOpponentType{
+export interface tileOccupiedBy{
     x:number,
     y:number,
     boardState: Pieces[],
@@ -39,4 +39,12 @@ export interface isEnPassantMoveType {
     boardState: Pieces[],
     teamType: TeamType,
     lastMovesPiece: object | null, 
+}
+export interface generateBishopMoves {
+    px: number,
+    py:number,
+    boardState:Pieces[],
+    teamType:TeamType,
+    tileOccupiedByTeammate:any,
+    tileOccupiedByOpponent:any
 }

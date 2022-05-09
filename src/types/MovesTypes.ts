@@ -1,9 +1,8 @@
 export interface Grab{
     e: React.MouseEvent, 
-    setGrabX:any , 
-    setGrabY: any, 
+    setGrabPosition: any
     setActivePiece: any, 
-    boardRef: any
+    boardRef: any,
 }
 export interface Move {
     e: React.MouseEvent, 
@@ -15,10 +14,13 @@ export interface Drop {
     activePiece: HTMLElement | null, 
     setActivePiece: any,
     boardRef: any, 
-    grabX: number, 
-    grabY: number, 
+    grabPosition: grabPosition | null, 
     setPieces: any, 
     pieces: any[],
     lastMovesPiece: object | null,
     setLastMovesPiece: any
+}
+export interface grabPosition {
+    x: number,
+    y: number
 }

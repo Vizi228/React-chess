@@ -1,14 +1,19 @@
-import {isValidMoveType,TeamType,PieceType, tileIsOccupiedType, tileOccupiedByOpponentType, isEnPassantMoveType } from "../types/RefereeTypes"
-
+import {isValidMoveType,TeamType,PieceType, tileIsOccupiedType, tileOccupiedBy, isEnPassantMoveType } from "../types/RefereeTypes"
+import { bishopMovement } from "../utils/generateBishopMove"
 export default class Referee {
     tileIsOccupied({x,y,boardState}: tileIsOccupiedType): boolean{
         let inFrontOfTile = boardState.find(p => p.x === x && p.y === y)
         if(inFrontOfTile) return false
         else return true
     }
-    tileOccupiedByOpponent({x,y,boardState, teamType}: tileOccupiedByOpponentType): boolean{
-        let inSideOfTile = boardState.find(p => p.x === x && p.y === y && p.teamType !== teamType)
-        if(inSideOfTile) return false
+    tileOccupiedByOpponent({x,y,boardState, teamType}: tileOccupiedBy): boolean{
+        let occupiedTile = boardState.find(p => p.x === x && p.y === y && p.teamType !== teamType)
+        if(occupiedTile) return false
+        else return true
+    }
+    tileOccupiedByTeammate({x,y,boardState,teamType}: tileOccupiedBy): boolean {
+        let occupiedTile = boardState.find(p => p.x === x && p.y === y && p.teamType === teamType)
+        if(occupiedTile) return false
         else return true
     }
     isEnPassantMove ({x,y,boardState,teamType, lastMovesPiece}: isEnPassantMoveType){
@@ -21,6 +26,7 @@ export default class Referee {
         }
     }
     isValidMove({px,py,x,y,type,teamType,boardState,lastMovesPiece}:isValidMoveType) {
+
         if(type === PieceType.PAWN){
             //Start asset
             let team = teamType === TeamType.OUR
@@ -47,6 +53,35 @@ export default class Referee {
             if(validFrontAttack && validSideAttack && !this.tileOccupiedByOpponent({x,y,boardState,teamType})){
                 return true
             }
+        }
+        if(type === PieceType.KNIGHT){
+            //Calculate the movements
+            let topMove = (y === py + 2 && x === px + 1) || (y === py + 2 && x === px - 1);
+            let rightMove = (y === py + 1 && x === px + 2) || (y === py-1 && x === px + 2);
+            let leftMove = (y === py + 1 && x === px - 2) || (y === py-1 && x === px - 2);
+            let bottomMove = (y === py-2 && x === px -1) || (y === py-2 && x === px + 1);
+            let controlMoves = topMove || rightMove || leftMove || bottomMove;
+
+
+            if(controlMoves && this.tileIsOccupied({x,y,boardState}) ){
+                return true
+            }
+            if(controlMoves && !this.tileOccupiedByOpponent({x,y,boardState, teamType})) {
+                return true
+            }
+        }
+        if(type === PieceType.BISHOP){
+            const bishopMoves = bishopMovement({px,py,tileOccupiedByOpponent: this.tileOccupiedByOpponent,tileOccupiedByTeammate: this.tileOccupiedByTeammate,boardState,teamType});
+            const validBishopMovement = bishopMoves.find(item => item.x === x && item.y === y);
+            if(validBishopMovement && this.tileIsOccupied({x,y,boardState})){
+                return true
+            }
+            if(validBishopMovement && !this.tileOccupiedByOpponent({x,y,boardState, teamType})) {
+                return true
+            }
+        }
+        if(type === PieceType.ROOK) {
+            console.log('ROOK')
         }
         return false
     }

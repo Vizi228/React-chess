@@ -1,16 +1,18 @@
 import Referee from "../referee/Referee"
 import { Move,Drop,Grab } from "../types/MovesTypes";
 
-export const grabPiece = ({e, setGrabX , setGrabY, setActivePiece, boardRef} : Grab) => {
+export const grabPiece = ({e, setGrabPosition , setActivePiece, boardRef} : Grab) => {
     let element = e.target as HTMLElement
     if(element.classList.contains('tile-piece')){
         const x = Math.floor((e.clientX - boardRef.current.offsetLeft) / 100);
         const y = Math.abs(Math.ceil((e.clientY - boardRef.current.offsetTop - 800) / 100));
-        setGrabX(x);
-        setGrabY(y)
+        setGrabPosition({x,y})
         setActivePiece(element)
     }
 }
+
+
+
 export const movePiece = ({e, boardRef, activePiece } : Move) => {
     const x = e.clientX;
     const y = e.clientY;
@@ -29,7 +31,12 @@ export const movePiece = ({e, boardRef, activePiece } : Move) => {
         activePiece.style.zIndex = '100';
     }
 }
-export const dropPiece = ({e,activePiece,setPieces,setActivePiece,boardRef,pieces,grabX,grabY, setLastMovesPiece, lastMovesPiece} : Drop) => {
+
+
+
+
+
+export const dropPiece = ({e,activePiece,setPieces,setActivePiece,boardRef,pieces,grabPosition, setLastMovesPiece, lastMovesPiece} : Drop) => {
     let referee = new Referee();
 
     //Calculate board coor
@@ -40,12 +47,8 @@ export const dropPiece = ({e,activePiece,setPieces,setActivePiece,boardRef,piece
     const coorBottom = boardRef.current.offsetTop + boardRef.current.offsetHeight - 15;
     const x = e.clientX;
     const y = e.clientY;
-
     let coorChessboard = coorLeft < x && coorRight > x && coorTop < y && coorBottom > y;
-    
-    //Move Piece
-
-    if(activePiece){
+    if(activePiece && grabPosition){
         const x = Math.floor((e.clientX - boardRef.current.offsetLeft) / 100);
         const y = Math.abs(Math.ceil((e.clientY - boardRef.current.offsetTop - 800) / 100));
         //Update board
@@ -58,13 +61,13 @@ export const dropPiece = ({e,activePiece,setPieces,setActivePiece,boardRef,piece
             return
         }
         //Attack Logic
-        const currentPiece = pieces.find(p => p.y === grabY && p.x === grabX);
+        const currentPiece = pieces.find(p => p.y === grabPosition.y && p.x === grabPosition.x);
         const attackedPiece = pieces.find(p => p.y === y && p.x === x);
-        const validMove = referee.isValidMove({px: grabX, py: grabY, x, y, type: currentPiece.type,teamType: currentPiece.teamType, boardState: pieces,lastMovesPiece})
+        const validMove = referee.isValidMove({px: grabPosition.x, py: grabPosition.y, x, y, type: currentPiece.type,teamType: currentPiece.teamType, boardState: pieces,lastMovesPiece})
         const isEnPassantMove = referee.isEnPassantMove({x,y,boardState: pieces,teamType: currentPiece.teamType, lastMovesPiece})
-
+        //Move Piece
         setPieces(pieces.map(item => {
-            if(item.x === grabX && item.y === grabY){
+            if(item.x === grabPosition.x && item.y === grabPosition.y){
                 if(validMove){
                   item.x = x;
                   item.y = y;
