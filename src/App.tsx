@@ -12,6 +12,7 @@ function App() {
     const [activePiece, setActivePiece] = useState<HTMLElement | null>(null);
     const [lastMovesPiece, setLastMovesPiece] = useState<object | null>(null)
     const [grabPosition, setGrabPosition] = useState<grabPosition | null>(null);
+    const [currentTeam, setCurrentTeam] = useState<boolean>(true);
     const [pieces, setPieces] = useState<Pieces[]>([]);
     const board: any[] = CreateBoard(pieces, Tile);
     const boardRef: any = useRef<HTMLElement>();
@@ -22,7 +23,7 @@ function App() {
     <div className='app'         
           onPointerDown={(e) => grabPiece({e, setGrabPosition, setActivePiece, boardRef})} 
           onPointerMove={(e => movePiece({e, boardRef, activePiece}))} 
-          onPointerUp={e => dropPiece({e, activePiece, setActivePiece, boardRef,grabPosition,setPieces,pieces, lastMovesPiece, setLastMovesPiece})}
+          onPointerUp={e => dropPiece({e, activePiece, setCurrentTeam,  currentTeam, setActivePiece, boardRef,grabPosition,setPieces,pieces, lastMovesPiece, setLastMovesPiece})}
     >
       <Chessboard board={board} boardRef={boardRef}/>
     </div>

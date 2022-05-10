@@ -1,5 +1,6 @@
 import Referee from "../referee/Referee"
 import { Move,Drop,Grab } from "../types/MovesTypes";
+import { PieceType, TeamType } from "../types/RefereeTypes";
 
 export const grabPiece = ({e, setGrabPosition , setActivePiece, boardRef} : Grab) => {
     let element = e.target as HTMLElement
@@ -36,7 +37,7 @@ export const movePiece = ({e, boardRef, activePiece } : Move) => {
 
 
 
-export const dropPiece = ({e,activePiece,setPieces,setActivePiece,boardRef,pieces,grabPosition, setLastMovesPiece, lastMovesPiece} : Drop) => {
+export const dropPiece = ({e,activePiece,setPieces,currentTeam,setCurrentTeam, setActivePiece,boardRef,pieces,grabPosition, setLastMovesPiece, lastMovesPiece} : Drop) => {
     let referee = new Referee();
 
     //Calculate board coor
@@ -63,14 +64,22 @@ export const dropPiece = ({e,activePiece,setPieces,setActivePiece,boardRef,piece
         //Attack Logic
         const currentPiece = pieces.find(p => p.y === grabPosition.y && p.x === grabPosition.x);
         const attackedPiece = pieces.find(p => p.y === y && p.x === x);
-        const validMove = referee.isValidMove({px: grabPosition.x, py: grabPosition.y, x, y, type: currentPiece.type,teamType: currentPiece.teamType, boardState: pieces,lastMovesPiece})
-        const isEnPassantMove = referee.isEnPassantMove({x,y,boardState: pieces,teamType: currentPiece.teamType, lastMovesPiece})
+        const validMove = referee.isValidMove({px: grabPosition.x, py: grabPosition.y, x, y,currentTeam, type: currentPiece.type,teamType: currentPiece.teamType, boardState: pieces,lastMovesPiece})
+        const isEnPassantMove = referee.isEnPassantMove({x,y,boardState: pieces,teamType: currentPiece.teamType, lastMovesPiece});
+        const teamPlace = currentPiece.teamType === TeamType.OUR ? 7 : 0;
+        const transformPawn = currentPiece.type === PieceType.PAWN && y === teamPlace
         //Move Piece
         setPieces(pieces.map(item => {
             if(item.x === grabPosition.x && item.y === grabPosition.y){
                 if(validMove){
                   item.x = x;
                   item.y = y;
+                  if(transformPawn) {
+                    const type = (item.teamType === TeamType.OPPONENT) ? 'b' : 'w';
+                    item.type = PieceType.QUEEN;
+                    item.image = `/assets/images/${type}Q.png`
+                  }
+                  setCurrentTeam(!currentTeam);
                 }
                 else{
                  activePiece.style.position = 'relative';
@@ -82,10 +91,12 @@ export const dropPiece = ({e,activePiece,setPieces,setActivePiece,boardRef,piece
             return item
         }))
         if(isEnPassantMove){
-            setPieces(pieces.filter(item => item !== isEnPassantMove))
+            setPieces(pieces.filter(item => item !== isEnPassantMove));
+            setCurrentTeam(!currentTeam)
         }
         if(attackedPiece && validMove) {
-            setPieces(pieces.filter(item => item !== attackedPiece))
+            setPieces(pieces.filter(item => item !== attackedPiece));
+            setCurrentTeam(!currentTeam)
         }
         setLastMovesPiece(currentPiece)
         setActivePiece(null);

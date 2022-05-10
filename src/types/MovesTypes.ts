@@ -1,3 +1,6 @@
+import { TeamType } from "./RefereeTypes"
+
+
 export interface Grab{
     e: React.MouseEvent, 
     setGrabPosition: any
@@ -18,7 +21,9 @@ export interface Drop {
     setPieces: any, 
     pieces: any[],
     lastMovesPiece: object | null,
-    setLastMovesPiece: any
+    setLastMovesPiece: any,
+    currentTeam: boolean,
+    setCurrentTeam: any,
 }
 export interface grabPosition {
     x: number,
